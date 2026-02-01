@@ -222,9 +222,9 @@ done
 
 ### Assignment 2 python version:
 
+We put the code files into the root directory of ImplementingSearch.
 
-
-Implement an fmindex based search
+Implement an fmindex based search.
 It requires the same dependencies and environment.
 Benchmarking Results:
 ```bash
@@ -238,37 +238,45 @@ done
 
 python suffix Benchmarks on home computer with text.dna4.short.fasta.index(Issues with running on the server):
 --query_ct "100"
+
 total_hits	40
 build_ms	12544
 search_ms	1
 
 --query_ct "1000"
+
 total_hits	448
 build_ms	12545
 search_ms	14
 
 python fmindex Benchmarks on home computer:
+
 --query_ct "100"
+
 total_hits	40
 build_ms	91156
 search_ms	3
 
 --query_ct "1000"
+
 total_hits	448
 build_ms	91220
 search_ms	29
 
 --query_ct "10000"
+
 total_hits	4456
 build_ms	94796
 search_ms	286
 
 --query_ct "100000"
+
 total_hits	45335
 build_ms	91413
 search_ms	2641
 
 --query_ct "1000000"
+
 total_hits	453350
 build_ms	91679
 search_ms	26269
@@ -281,17 +289,21 @@ since that uses Python integers and has a huge memory footprint.
 It technically works, by having a stable FMindex buildtime of ~91500 ms, with a linearly scaling search ms time.
 
 python fmindex Benchmarks on home computer while checking for memory usage using tracemalloc:
+
 --query_ct "1000"
+
 total_hits	448
 index_mem_kb	10742296
 
 --query_ct "10000"
+
 total_hits	4456
 index_mem_kb	10742295
 
 Comparing to Server python execution:
 
 == suffix array len=100 N=1000 ==
+
 total_hits      448
 build_ms        99906
 search_ms       34
@@ -300,6 +312,7 @@ System time (seconds): 4.30
 Elapsed (wall clock) time (h:mm:ss or m:ss): 1:45.63
 
 == suffix array len=100 N=1000000 ==
+
 total_hits      453350
 build_ms        97869
 search_ms       30759
