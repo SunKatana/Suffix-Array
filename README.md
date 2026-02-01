@@ -350,7 +350,7 @@ $ make        # builds our software, repeat this command to recompile your softw
 
 ## Naive search
 The first Algorithm implemented is the naive search. It works by sliding the query over the references, comparing at each possible position if the two sequences match. that has a O(n*m) runtime, which scales really badly.
-To see how badly, here are the Benchmarks, executed from the build directory (Shown values are wall-time runtime and Maximum resident set size in kb:
+To see how badly, here are the Benchmarks, executed from the build directory (Shown values are wall-time runtime and Maximum resident set size in kb):
 
 ```bash
 N = 1000
