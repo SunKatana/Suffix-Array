@@ -340,7 +340,7 @@ At the time of submitting, it was still running. Attempts at running it locally 
 Normally, the FMindex should be vastly superior in both runtime and memory compared to the suffix array. Our implementation is lacking in both. We also attempted implementing it in C++, but had issues with the Seqan3 integration, as described in the github, and didn't finish it in time. Our cpp FMindex is attached in the submission.
 Our implementation did however achieve a runtime scaling well with query_ct.
 
-Due to the bad runtimes of python implementations, we redid all implementations in C++:
+Due to the bad runtimes of python implementations, we redid all implementations in C++, and some changes were done to last weeks report, mainly the correct paths for data is now used in the code execution:
 
 # Search Algorithms implemented in C++:
 This part of the report reimplements all tasks in C++. A fresh import of the git directory was used for a fresh start.
