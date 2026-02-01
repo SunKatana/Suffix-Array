@@ -337,7 +337,7 @@ Our implementation did however achieve a runtime scaling well with query_ct.
 
 Due to the bad runtimes of python implementations, we redid all implementations in C++:
 
-#### Search Algorithms implemented in C++:
+# Search Algorithms implemented in C++:
 
 This implementation work on the base of the given git directory, installable by using
 
@@ -357,7 +357,7 @@ $ make        # builds our software, repeat this command to recompile your softw
 
 ## Naive search
 The first Algorithm implemented is the naive search. It works by sliding the query over the references, comparing at each possible position if the two sequences match. that has a O(n*m) runtime, which scales really badly.
-To see how badly, here are the Benchmarks, executed from the build directory (Shown values are wall-time runtime and :
+To see how badly, here are the Benchmarks, executed from the build directory (Shown values are wall-time runtime and Maximum resident set size in kb:
 
 ```bash
 N = 1000
@@ -366,24 +366,29 @@ for L in 40 60 80 100; do
   /usr/bin/time -f "Elapsed: %E\nMax RSS: %M KB" ./bin/naive_search --reference ../data/hg38_partial.fasta.gz --query ../data/illumina_reads_${L}.fasta.gz --query_ct "$N"
 done
 ```
-# Results:
+
 == naive search len=40 N=1000 ==
+
 Total hits: 1300
 Elapsed: 5:43.98
 Max RSS: 212896 KB
 == naive search len=60 N=1000 ==
+
 Total hits: 720
 Elapsed: 5:43.94
 Max RSS: 217668 KB
 == naive search len=80 N=1000 ==
+
 Total hits: 563
 Elapsed: 5:44.17
 Max RSS: 218048 KB
 == naive search len=100 N=1000 ==
+
 Total hits: 448
 Elapsed: 5:43.44
 Max RSS: 219600 KB
 == naive search len=40 N=10000 ==
+
 Total hits: 20069
 Elapsed: 57:08.87
 Max RSS: 212876 KB
@@ -401,18 +406,22 @@ done
 ```
 
 == suffix_array_search len=40 ==
+
 total_hits	50
 Elapsed: 0:11.73
 Max RSS: 603060 KB
 == suffix_array_search len=60 ==
+
 total_hits	43
 Elapsed: 0:12.15
 Max RSS: 606572 KB
 == suffix_array_search len=80 ==
+
 total_hits	40
 Elapsed: 0:12.80
 Max RSS: 607740 KB
 == suffix_array_search len=100 ==
+
 total_hits	40
 Elapsed: 0:12.21
 Max RSS: 609736 KB
@@ -455,8 +464,11 @@ done
 ```
 
 == construct fm=100 N=1000 ==
+
 Saving 2FM-Index ... done
+
 == search fm len=100 N=1000 ==
+
 Loading 2FM-Index ... done
 Total hits: 448
 Elapsed: 0:00.30
@@ -465,8 +477,11 @@ Sys CPU: 0.07 s
 Max RSS: 83164 KB
 
 == construct fm=100 N=10000 ==
+
 Saving 2FM-Index ... done
+
 == search fm len=100 N=10000 ==
+
 Loading 2FM-Index ... done
 Total hits: 4456
 Elapsed: 0:00.29
@@ -475,8 +490,11 @@ Sys CPU: 0.05 s
 Max RSS: 83636 KB
 
 == construct fm=100 N=100000 ==
+
 Saving 2FM-Index ... done
+
 == search fm len=100 N=100000 ==
+
 Loading 2FM-Index ... done
 Total hits: 45335
 Elapsed: 0:01.14
@@ -485,8 +503,11 @@ Sys CPU: 0.05 s
 Max RSS: 83176 KB
 
 == construct fm=100 N=1000000 ==
+
 Saving 2FM-Index ... done
+
 == search fm len=100 N=1000000 ==
+
 Loading 2FM-Index ... done
 Total hits: 453350
 Elapsed: 0:09.80
@@ -510,21 +531,28 @@ done
 ```
 
 == loading index len=40 ==
+
 Loading 2FM-Index ... done
 Total hits: 24391
 Elapsed: 0:01.38
 Max RSS: 2266652 KB
+
 == loading index len=60 ==
+
 Loading 2FM-Index ... done
 Total hits: 8768
 Elapsed: 0:01.32
 Max RSS: 2270028 KB
+
 == loading index len=80 ==
+
 Loading 2FM-Index ... done
 Total hits: 4561
 Elapsed: 0:01.24
 Max RSS: 2271120 KB
+
 == loading index len=100 ==
+
 Loading 2FM-Index ... done
 Total hits: 929
 Elapsed: 0:01.21
@@ -551,50 +579,74 @@ done
 ```
 
 == fmindex_construct E=0 ==
+
 Saving 2FM-Index ... done
+
 == fmindex_search E=0 ==
+
 Total hits: 50
 Elapsed: 0:00.14
 Max RSS: 76904 KB
+
 == pigeon_search E=0 ==
+
 Total hits: 50
 Elapsed: 0:00.98
 Max RSS: 276700 KB
+
 == fmindex_construct E=1 ==
+
 Saving 2FM-Index ... done
+
 == fmindex_search E=1 ==
+
 Total hits: 232
 Elapsed: 0:00.16
 Max RSS: 76928 KB
+
 == pigeon_search E=1 ==
+
 Total hits: 161
 Elapsed: 0:00.84
 Max RSS: 276812 KB
+
 == fmindex_construct E=2 ==
+
 Saving 2FM-Index ... done
+
 == fmindex_search E=2 ==
+
 Total hits: 1124
 Elapsed: 0:00.39
 Max RSS: 76904 KB
+
 == pigeon_search E=2 ==
+
 Loading 2FM-Index ... done
+
 Total hits: 661
 Elapsed: 0:01.07
 Max RSS: 276956 KB
+
 == fmindex_construct E=3 ==
+
 Saving 2FM-Index ... done
+
 == fmindex_search E=3 ==
+
 Total hits: 5000
 Elapsed: 0:04.04
 Max RSS: 77072 KB
+
 == pigeon_search E=3 ==
+
 Total hits: 3081
 Elapsed: 0:02.08
 Max RSS: 284060 KB
 
 On lower error count, the FMindex search outperfomres the pigeon hole FMindex search, but from E>=3, pigeonhole outperformes the FMindex search in terms of runtime. Pigeon generally uses more memory, and finds less hits. The lower hit count is due to the pigeon hole implementation using hamming distance, which doesn't account for insertions and deletions. It also skips hits, that are close to the beginning due to "if (hit_pos < begin){continue;}", which filters hits out, that are starting before the reference starts.
 
-### Conclusion
+# Conclusion
 
 These are our C++ implementations of the ImplementingSearch git repository. Last week, we had some communication and technical issues, leading to a badly implemented fm search being submitted, with a badly written report. We also had some issues properly interacting with the server (it stated we had to connect to compute03.mi.fu-berlin.de instead of using compute03.imp.fu-berlin.de). We hope that this redo of the report can rectify it.
 
