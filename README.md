@@ -372,21 +372,25 @@ done
 Total hits: 1300
 Elapsed: 5:43.98
 Max RSS: 212896 KB
+
 == naive search len=60 N=1000 ==
 
 Total hits: 720
 Elapsed: 5:43.94
 Max RSS: 217668 KB
+
 == naive search len=80 N=1000 ==
 
 Total hits: 563
 Elapsed: 5:44.17
 Max RSS: 218048 KB
+
 == naive search len=100 N=1000 ==
 
 Total hits: 448
 Elapsed: 5:43.44
 Max RSS: 219600 KB
+
 == naive search len=40 N=10000 ==
 
 Total hits: 20069
@@ -410,16 +414,19 @@ done
 total_hits	50
 Elapsed: 0:11.73
 Max RSS: 603060 KB
+
 == suffix_array_search len=60 ==
 
 total_hits	43
 Elapsed: 0:12.15
 Max RSS: 606572 KB
+
 == suffix_array_search len=80 ==
 
 total_hits	40
 Elapsed: 0:12.80
 Max RSS: 607740 KB
+
 == suffix_array_search len=100 ==
 
 total_hits	40
