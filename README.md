@@ -1,5 +1,7 @@
 # Assignment 1 — Naive Search vs Suffix Array Search (Python + C++) by the Jonas Brothers 
 
+To see this report in a better way, visit https://github.com/SunKatana/Suffix-Array/blob/patch-1/README.md  ,(do it, it looks way better there)
+
 This repository contains implementations and benchmarks for exact string search on DNA data:
 
 * **Naive search** (baseline): scans the reference for each query
