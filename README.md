@@ -190,6 +190,18 @@ for N in 1000 10000 100000 1000000; do
 done
 ```
 
+--query_ct "100"
+
+total_hits	40
+build_ms	12544
+search_ms	1
+
+--query_ct "1000"
+
+total_hits	448
+build_ms	12545
+search_ms	14
+
 Record from `/usr/bin/time -v`:
 
 * `Elapsed (wall clock) time`
@@ -215,10 +227,51 @@ for L in 40 60 80 100; do
   echo "== naive len=$L N=$N =="
   /usr/bin/time -v python naive_search.py --reference "$R" --query "$Q" --query_ct "$N"
 
-  echo "== suffix array len=$L N=$N =="
-  /usr/bin/time -v python suffixarray_search.py --reference "$R" --query "$Q" --query_ct "$N"
 done
 ```
+
+
+```bash
+N=10000
+
+for L in 40 60 80 100; do
+  
+  echo "== suffix array len=$L N=$N =="
+  /usr/bin/time -f "Elapsed: %E\nMax RSS: %M KB" python suffixarray_search.py --reference "data/hg38_partial.fasta.gz" --query data/illumina_reads_${L}.fasta.gz --query_ct "$N"
+done
+```
+== suffix array len=40 N=10000 ==
+
+total_hits      20069
+build_ms        20235
+search_ms       161
+Elapsed: 0:24.31
+Max RSS: 4815812 KB
+
+== suffix array len=60 N=10000 ==
+
+total_hits      6415
+build_ms        19704
+search_ms       182
+Elapsed: 0:22.96
+Max RSS: 4815804 KB
+
+== suffix array len=80 N=10000 ==
+
+total_hits      4982
+build_ms        18871
+search_ms       141
+Elapsed: 0:22.07
+Max RSS: 4816280 KB
+
+== suffix array len=100 N=10000 ==
+
+total_hits      4456
+build_ms        18895
+search_ms       148
+Elapsed: 0:22.21
+Max RSS: 4816252 KB
+
 
 ### Assignment 2 python version:
 
@@ -231,97 +284,54 @@ Benchmarking Results:
 for N in 1000 10000 100000 1000000; do
 
   for L in 100; do
-    echo "== suffix array len=$L N=$N =="
+    echo "== fmindex_search len=$L N=$N =="
     /usr/bin/time -f "Elapsed: %E\nMax RSS: %M KB" python fmindex_search.py --reference "data/hg38_partial.fasta.gz" --query "data/illumina_reads_${L}.fasta.gz" --query_ct "$N"
 done
 done
 ```
 
-python suffix Benchmarks on home computer with text.dna4.short.fasta.index(Issues with running on the server):
---query_ct "100"
+python fmindex Benchmarks on server:
 
-total_hits	40
-build_ms	12544
-search_ms	1
+== fmindex_search len=100 N=1000 ==
 
---query_ct "1000"
+total_hits      448
+build_ms        88758
+search_ms       32
+Elapsed: 1:34.58
+Max RSS: 11295060 KB
 
-total_hits	448
-build_ms	12545
-search_ms	14
+== fmindex_search len=100 N=10000 ==
 
-python fmindex Benchmarks on home computer:
+total_hits      4456
+build_ms        91573
+search_ms       306
+Elapsed: 1:38.01
+Max RSS: 11298704 KB
 
---query_ct "100"
+== fmindex_search len=100 N=100000 ==
 
-total_hits	40
-build_ms	91156
-search_ms	3
+total_hits      45335
+build_ms        94356
+search_ms       3059
+Elapsed: 1:43.61
+Max RSS: 11312756 KB
 
---query_ct "1000"
+== fmindex_search len=100 N=1000000 ==
 
-total_hits	448
-build_ms	91220
-search_ms	29
+total_hits      453350
+build_ms        97347
+search_ms       28845
+Elapsed: 2:12.82
+Max RSS: 11325256 KB
 
---query_ct "10000"
 
-total_hits	4456
-build_ms	94796
-search_ms	286
-
---query_ct "100000"
-
-total_hits	45335
-build_ms	91413
-search_ms	2641
-
---query_ct "1000000"
-
-total_hits	453350
-build_ms	91679
-search_ms	26269
-
-This Python's fmindex is always worse than the suffix array implementation in runtime, since it also requires a suffix array, and due to
+This Python's fmindex is always worse than the suffix array implementation in runtime due to
 ```bash
 self.Occ = {c: [0] * (self.n + 1) for c in self.alphabet}
 ```
 since that uses Python integers and has a huge memory footprint.
-It technically works, by having a stable FMindex buildtime of ~91500 ms, with a linearly scaling search ms time.
-
-python fmindex Benchmarks on home computer while checking for memory usage using tracemalloc:
-
---query_ct "1000"
-
-total_hits	448
-index_mem_kb	10742296
-
---query_ct "10000"
-
-total_hits	4456
-index_mem_kb	10742295
-
-Comparing to Server python execution:
-
-== suffix array len=100 N=1000 ==
-
-total_hits      448
-build_ms        99906
-search_ms       34
-User time (seconds): 101.27
-System time (seconds): 4.30
-Elapsed (wall clock) time (h:mm:ss or m:ss): 1:45.63
-
-== suffix array len=100 N=1000000 ==
-
-total_hits      453350
-build_ms        97869
-search_ms       30759
-User time (seconds): 130.09
-System time (seconds): 4.32
-Elapsed (wall clock) time (h:mm:ss or m:ss): 2:14.50
-
-On the server, the runtime was a bit slower, but we can see with the linux time benchmark, that the runtime increase scales well with larger query_ct.
+It technically works, by having a stable FMindex buildtime of ~91500 ms, with a better than linearly scaling search  runtime.
+The runtime increase scales well with larger query_ct.
 
 Benchmark the Human reference genome:
 
@@ -329,16 +339,16 @@ Benchmark the Human reference genome:
 R=data/reference/GCF_000001405.26_GRCh38_genomic.fna
 N=10000
 for L in 40 60 80 100; do
-  Q=$DATA/illumina_reads_${L}.fasta.gz
   echo "== suffix array len=$L N=$N =="
-  /usr/bin/time -v python fmindex_search.py --reference "$R" --query "$Q" --query_ct "$N"
+  /usr/bin/time -v python fmindex_search.py --reference "$R" --query "data/illumina_reads_${L}.fasta.gz" --query_ct "$N"
 done
 ```
 At the time of submitting, it was still running. Attempts at running it locally caused PC crashes, and I only managed server access very late.
+Now, a week later, this still couldnt properly run. The Index construction crashes with this datasize, and we reimplemented everything in C++.
 
 
 ### Conclusion
-Normally, the FMindex should be vastly superior in both runtime and memory compared to the suffix array. Our implementation is lacking in both. We also attempted implementing it in C++, but had issues with the Seqan3 integration, as described in the github, and didn't finish it in time. Our cpp FMindex is attached in the submission.
+Normally, the FMindex should be vastly superior in both runtime and memory compared to the suffix array. Our implementation is lacking in both. We also attempted implementing it in C++, but had issues with the Seqan3 integration at the time, and redid it in the next part.
 Our implementation did however achieve a runtime scaling well with query_ct.
 
 Due to the bad runtimes of python implementations, we redid all implementations in C++, and some changes were done to last weeks report, mainly the correct paths for data is now used in the code execution:
