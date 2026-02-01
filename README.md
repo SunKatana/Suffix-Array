@@ -94,10 +94,6 @@ You need:
 
 Example paths on FU:
 
-```bash
-DATA=/home/mi/danim02/advalg-assignment1-python/c++/ImplementingSearch/data
-R=$DATA/hg38_partial.fasta.gz
-```
 
 Available query files (example):
 
@@ -107,19 +103,19 @@ Available query files (example):
 * `illumina_reads_100.fasta.gz`
 
 ---
-
+Copy the python files into the directory ImplementingSearch (on the same level as data and src)
 ## How to run
 
 ### Naive search (baseline)
 
 ```bash
-python naive_search.py --reference "$R" --query "$DATA/illumina_reads_40.fasta.gz" --query_ct 1000
+python naive_search.py --reference "data/hg38_partial.fasta.gz" --query "data/illumina_reads_40.fasta.gz" --query_ct 1000
 ```
 
 ### Suffix array search
 
 ```bash
-python suffixarray_search.py --reference "$R" --query "$DATA/illumina_reads_40.fasta.gz" --query_ct 1000
+python suffixarray_search.py --reference "data/hg38_partial.fasta.gz" --query "data/illumina_reads_40.fasta.gz" --query_ct 1000
 ```
 
 ### Arguments
@@ -179,42 +175,62 @@ Recommended on Linux with GNU `time` to measure both runtime and memory.
 ### A) Query length = 100, varying number of queries (10³ / 10⁴ / 10⁵ / 10⁶)
 
 ```bash
-Q100=$DATA/illumina_reads_100.fasta.gz
+L=100
 
-for N in 1000 10000 100000 1000000; do
-  echo "== naive len=100 N=$N =="
-  /usr/bin/time -v python naive_search.py --reference "$R" --query "$Q100" --query_ct "$N"
-
-  echo "== suffix array len=100 N=$N =="
-  /usr/bin/time -v python suffixarray_search.py --reference "$R" --query "$Q100" --query_ct "$N"
+for N in 1000 10000 1000000 1000000; do
+  echo "== suffix array len=$L N=$N =="
+  /usr/bin/time -f "Elapsed: %E\nMax RSS: %M KB" python naive_search.py --reference "data/hg38_partial.fasta.gz" --query data/illumina_reads_${L}.fasta.gz --query_ct "$N"
 done
 ```
---query_ct "100"
-
-total_hits	40
-build_ms	12544
-search_ms	1
-
---query_ct "1000"
-
-total_hits	448
-build_ms	12545
-search_ms	14
+(This WOULD be the code to execute our naive search, and technically it works, however it takes an insane long time to run, so not recommended.)
 
 
 ```bash
 L=100
 
-for N in 1000 10000 1000000 1000000; do
+for N in 1000 10000 100000 1000000; do
   echo "== suffix array len=$L N=$N =="
   /usr/bin/time -f "Elapsed: %E\nMax RSS: %M KB" python suffixarray_search.py --reference "data/hg38_partial.fasta.gz" --query data/illumina_reads_${L}.fasta.gz --query_ct "$N"
 done
 ```
 
+== suffix array len=100 N=1000 ==
+
+total_hits      448
+build_ms        19187
+search_ms       16
+Elapsed: 0:22.49
+Max RSS: 4815060 KB
+
+== suffix array len=100 N=10000 ==
+
+total_hits      4456
+build_ms        19803
+search_ms       147
+Elapsed: 0:23.27
+Max RSS: 4816576 KB
+
+== suffix array len=100 N=100000 ==
+
+total_hits      45335
+build_ms        19196
+search_ms       1447
+Elapsed: 0:24.56
+Max RSS: 4831200 KB
+
+
+== suffix array len=100 N=1000000 ==
+
+total_hits      453350
+build_ms        19132
+search_ms       14722
+Elapsed: 0:37.72
+Max RSS: 4846208 KB
 
 
 
-Record from `/usr/bin/time -v`:
+
+Record from `/usr/bin/time -f "Elapsed: %E\nMax RSS: %M KB"`:
 
 * `Elapsed (wall clock) time`
 * `Maximum resident set size (kbytes)`
@@ -238,7 +254,7 @@ echo "== naive len=$L N=$N =="
   /usr/bin/time -f "Elapsed: %E\nMax RSS: %M KB" python naive_search.py --reference "data/hg38_partial.fasta.gz" --query data/illumina_reads_${L}.fasta.gz --query_ct "$N"
 done
 ```
-(This WOULD be the code to execute our search, and technically it works, however it takes an insane long time to run)
+(This WOULD be the code to execute our naive search, and technically it works, however it takes an insane long time to run.)
 KeyboardInterrupt
 Command terminated by signal 2
 Elapsed: 37:03.83
