@@ -184,6 +184,19 @@ done
 ```
 (This WOULD be the code to execute our naive search, and technically it works, however it takes an insane long time to run, so not recommended.)
 
+Proof of concept benchmark:
+```bash
+echo "== naive len=40 N=100 =="
+  /usr/bin/time -f "Elapsed: %E\nMax RSS: %M KB" python naive_search.py --reference "data/hg38_partial.fasta.gz" --query data/illumina_reads_40.fasta.gz --query_ct "100"
+```
+
+== naive len=40 N=100 ==
+
+total_hits      50
+search_ms       980204
+Elapsed: 16:22.44
+Max RSS: 440272 KB
+
 
 ```bash
 L=100
@@ -255,12 +268,17 @@ echo "== naive len=$L N=$N =="
 done
 ```
 (This WOULD be the code to execute our naive search, and technically it works, however it takes an insane long time to run.)
+
+== naive len=40 N=10000 ==
+
 KeyboardInterrupt
+
 Command terminated by signal 2
+
 Elapsed: 37:03.83
 Max RSS: 440260 KB
 
-We had values that prove it worked, but running on the server is unfeasable, especially with higher N.
+We had results that prove it worked, but running on the server is unfeasable, especially with higher N.
 
 ```bash
 N=10000
