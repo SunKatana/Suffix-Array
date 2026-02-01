@@ -189,7 +189,6 @@ for N in 1000 10000 100000 1000000; do
   /usr/bin/time -v python suffixarray_search.py --reference "$R" --query "$Q100" --query_ct "$N"
 done
 ```
-
 --query_ct "100"
 
 total_hits	40
@@ -201,6 +200,19 @@ search_ms	1
 total_hits	448
 build_ms	12545
 search_ms	14
+
+
+```bash
+L=100
+
+for N in 1000 10000 1000000 1000000; do
+  echo "== suffix array len=$L N=$N =="
+  /usr/bin/time -f "Elapsed: %E\nMax RSS: %M KB" python suffixarray_search.py --reference "data/hg38_partial.fasta.gz" --query data/illumina_reads_${L}.fasta.gz --query_ct "$N"
+done
+```
+
+
+
 
 Record from `/usr/bin/time -v`:
 
@@ -222,14 +234,17 @@ Pick an `N` that finishes reasonably fast for naive search (e.g. `1000` or `1000
 N=10000
 
 for L in 40 60 80 100; do
-  Q=$DATA/illumina_reads_${L}.fasta.gz
-
-  echo "== naive len=$L N=$N =="
-  /usr/bin/time -v python naive_search.py --reference "$R" --query "$Q" --query_ct "$N"
-
+echo "== naive len=$L N=$N =="
+  /usr/bin/time -f "Elapsed: %E\nMax RSS: %M KB" python naive_search.py --reference "data/hg38_partial.fasta.gz" --query data/illumina_reads_${L}.fasta.gz --query_ct "$N"
 done
 ```
+(This WOULD be the code to execute our search, and technically it works, however it takes an insane long time to run)
+KeyboardInterrupt
+Command terminated by signal 2
+Elapsed: 37:03.83
+Max RSS: 440260 KB
 
+We had values that prove it worked, but running on the server is unfeasable, especially with higher N.
 
 ```bash
 N=10000
@@ -672,7 +687,9 @@ On lower error count, the FMindex search outperfomres the pigeon hole FMindex se
 
 # Conclusion
 
-These are our C++ implementations of the ImplementingSearch git repository. Last week, we had some communication and technical issues, leading to a badly implemented fm search being submitted, with a badly written report. We also had some issues properly interacting with the server (it stated we had to connect to compute03.mi.fu-berlin.de instead of using compute03.imp.fu-berlin.de). We hope that this redo of the report can rectify it.
+These are our C++ implementations of the ImplementingSearch git repository. C++ has been far superior to python in all implementations, from memory to runtime. There is the curious case of the given code using unidirectional fmindex, while stating it uses the 2fmindex, so a clarification on that would be appreciated.
+
+Last week, we had some communication and technical issues, leading to a badly implemented fm search being submitted, with a badly written report. We also had some issues properly interacting with the server (it stated we had to connect to compute03.mi.fu-berlin.de instead of using compute03.imp.fu-berlin.de). We hope that this redo of the report can rectify it.
 
 
 
