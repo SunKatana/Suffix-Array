@@ -223,22 +223,16 @@ done
 ### Assignment 2 python version:
 
 
-```bash
-DATA=/home/mi/tiloa00/Suffix-Array-main/data
-R=$DATA/reference/text.dna4.short.fasta
-```
 
 Implement an fmindex based search
-It requires the same dependencies and environment, in the addition of tracemalloc for memory checking.
+It requires the same dependencies and environment.
 Benchmarking Results:
 ```bash
 for N in 1000 10000 100000 1000000; do
 
   for L in 100; do
-    Q=$DATA/illumina_reads_${L}.fasta.gz
-
     echo "== suffix array len=$L N=$N =="
-    /usr/bin/time -v python fmindex_search.py --reference "$R" --query "$Q" --query_ct "$N"
+    /usr/bin/time -f "Elapsed: %E\nMax RSS: %M KB" python fmindex_search.py --reference "data/hg38_partial.fasta.gz" --query "data/illumina_reads_${L}.fasta.gz" --query_ct "$N"
 done
 ```
 
@@ -318,7 +312,7 @@ On the server, the runtime was a bit slower, but we can see with the linux time 
 Benchmark the Human reference genome:
 
 ```bash
-R=$DATA/reference/GCF_000001405.26_GRCh38_genomic.fna
+R=data/reference/GCF_000001405.26_GRCh38_genomic.fna
 N=10000
 for L in 40 60 80 100; do
   Q=$DATA/illumina_reads_${L}.fasta.gz
@@ -336,6 +330,7 @@ Our implementation did however achieve a runtime scaling well with query_ct.
 Due to the bad runtimes of python implementations, we redid all implementations in C++:
 
 # Search Algorithms implemented in C++:
+This part of the report reimplements all tasks in C++. A fresh import of the git directory was used for a fresh start.
 
 This implementation works on the base of the given git directory, installable by using
 
