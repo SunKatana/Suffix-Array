@@ -519,7 +519,7 @@ The index later gets loaded into the search with the given code
 using Index = decltype(seqan3::fm_index{std::vector<std::vector<seqan3::dna5>>{}}); // Some hack
 seqan3::debug_stream << "Loading 2FM-Index ... " << std::flush;
 ```
-which is stating again its a 2FMindex, while loading a unidirectional fmindex. to load a bidirectional fm index, "decltype(seqan3::bi_fm_index{...})" would be used. We implemented the search using seqan3::search, which detects the optimal runtime between handling the index as uni- and bidirectional automatically, meaning the index type doesn't matter for the implementation, but it is still confusing.
+which is stating again it's a 2FMindex, while loading a unidirectional fmindex. to load a bidirectional fm index, "decltype(seqan3::bi_fm_index{...})" would be used. We implemented the search using seqan3::search, which detects the optimal runtime between handling the index as uni- and bidirectional automatically, meaning the index type doesn't matter for the implementation, but it is still confusing.
 
 The runtime of the FMindex search is O(Q⋅m⋅logσ) with Q=number of queries, m=avg. query length and σ=5 (DNA5 ranks)
 
@@ -638,7 +638,7 @@ Due to multiple crashes (probably due to memory restrictions on the server, we m
 ## Pigeon hole search
 
 The Pigeonhole Principle states that if you allow k errors in a pattern, and you divide that pattern into k+1 pieces, at least one of those pieces must match the reference exactly. So the query is broken off into k+1 pieces, and each piece is queried with seqan3::search(part, index, cfg). If a part finds an exact match, the entire sequence is tested, if it fits into the area with errors<=k. If it fits, it counts as a hit.
-The given part of the code for the pigeon search again loads a unidirectional index, while stating its a bidirectional fmindex.
+The given part of the code for the pigeon search again loads a unidirectional index, while stating it's a bidirectional fmindex.
 
 Benchmark comparing pigeonhole to fm search:
 
