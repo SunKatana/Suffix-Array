@@ -234,6 +234,7 @@ for N in 1000 10000 100000 1000000; do
     echo "== suffix array len=$L N=$N =="
     /usr/bin/time -f "Elapsed: %E\nMax RSS: %M KB" python fmindex_search.py --reference "data/hg38_partial.fasta.gz" --query "data/illumina_reads_${L}.fasta.gz" --query_ct "$N"
 done
+done
 ```
 
 python suffix Benchmarks on home computer with text.dna4.short.fasta.index(Issues with running on the server):
