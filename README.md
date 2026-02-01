@@ -337,7 +337,7 @@ Due to the bad runtimes of python implementations, we redid all implementations 
 
 # Search Algorithms implemented in C++:
 
-This implementation work on the base of the given git directory, installable by using
+This implementation works on the base of the given git directory, installable by using
 
 ```bash
 git clone --recurse-submodules https://github.com/SGSSGene/ImplementingSearch
